@@ -8,14 +8,20 @@ import java.util.List;
 import java.util.Optional;
 
 @Repository
-public interface ExamRepository extends JpaRepository<Exam, String> { // Assuming Exam uses Long as ID
+public interface ExamRepository extends JpaRepository<Exam, Long> {
 
-    // Find by faculty, module name, or title (OR logic)
-    Optional<Exam> findFirstByFacultyOrModuleNameOrTitle(String faculty, String moduleName, String title);
+    // Search by title - return List if multiple results are possible
+    List<Exam> findByTitleContainingIgnoreCase(String title);
 
-    // Find by faculty, module name, and title (AND logic)
-    Optional<Exam> findByExactFacultyModuleNameAndTitle(String faculty, String moduleName, String title);
+    // Search by faculty - return List if multiple results are possible
+    List<Exam> findByFacultyContainingIgnoreCase(String faculty);
 
-    // Flexible search with partial matches and case-insensitivity
-    List<Exam> findByPartialMatchInFacultyModuleOrTitle(String faculty, String moduleName, String title);
+    // Search by module name - return List if multiple results are possible
+    List<Exam> findByModuleNameContainingIgnoreCase(String moduleName);
+
+    // Combined search with unique constraint, return Optional<Exam>
+    Optional<Exam> findByFacultyAndModuleNameAndTitle(String faculty, String moduleName, String title);
+
+    void deleteByFacultyAndModuleNameAndTitle(String faculty, String moduleName, String title);
+
 }
